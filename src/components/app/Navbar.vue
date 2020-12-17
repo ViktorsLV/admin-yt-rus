@@ -5,7 +5,8 @@
         <a href="#" @click.prevent="$emit('click')">
           <i class="material-icons black-text">dehaze</i>
         </a>
-        <span class="black-text">{{ date | date('datetime') }}</span> <!-- can be "date", "time" or "datetime" -->
+        <span class="black-text">{{ date | date('datetime') }}</span>
+        <!-- can be "date", "time" or "datetime" -->
       </div>
 
       <ul class="right hide-on-small-and-down">
@@ -16,10 +17,10 @@
             data-target="dropdown"
             ref="dropdown"
           >
-            USER NAME
+            {{ name }}
             <i class="material-icons right">arrow_drop_down</i>
           </a>
-  
+
           <ul id="dropdown" class="dropdown-content">
             <li>
               <router-link to="/profile" class="black-text">
@@ -47,20 +48,25 @@ export default {
     dropdown: null,
   }),
   methods: {
-    logout() {
-      console.log("logout");
-      this.$router.push("/login?message=logout");
+    async logout() {
+      await this.$store.dispatch('logout')
+      this.$router.push('/login?message=logout')
+    },
+  },
+  computed: {
+    /* to show the users name in the interface (the one that has logged in) */
+    name() {
+      return this.$store.getters.info.name
     },
   },
   mounted() {
-    this.interval = setInterval(() => {
-      this.date = new Date();
-    }, 1000),
-      
+    (this.interval = setInterval(() => {
+      this.date = new Date()
+    }, 1000)),
       /* from Materialize how to initialize the dropdown. Refers to "ref" in dropdown html element*/
-      this.dropdown = window.M.Dropdown.init(this.$refs.dropdown, {
+      (this.dropdown = window.M.Dropdown.init(this.$refs.dropdown, {
         constrainWidth: true,
-      });
+      }))
   },
 
   /* lifesycle hook that looks at the change of layout and destroys unnecessary things */
@@ -69,8 +75,8 @@ export default {
     if (this.dropdown && this.dropdown.destroy) {
       this.dropdown.destroy()
     }
-  }
-};
+  },
+}
 </script>
 
 <style lang="scss" scoped>

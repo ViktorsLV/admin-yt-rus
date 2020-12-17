@@ -68,7 +68,7 @@
       </div>
       <p>
         <label>
-          <input type="checkbox" v-model="agree"/>
+          <input type="checkbox" v-model="agree" />
           <span>С правилами согласен</span>
         </label>
       </p>
@@ -104,10 +104,10 @@ export default {
     email: { email, required },
     password: { required, minLength: minLength(8) },
     name: { required },
-    agree: { checked: v => v } /* custom validator */,
+    agree: { checked: (v) => v } /* custom validator */,
   },
   methods: {
-    submitForm() {
+    async submitForm() {
       if (this.$v.$invalid) {
         this.$v.$touch()
         return
@@ -117,10 +117,13 @@ export default {
       const formData = {
         email: this.email,
         password: this.password,
-        name: this.name
+        name: this.name,
       }
-      console.log(formData)
-      this.$router.push('/')
+      try {
+        await this.$store.dispatch('register', formData)
+        this.$router.push('/')
+        /* eslint-disable */
+      } catch (err) {}
     },
   },
 }
